@@ -1,6 +1,6 @@
 **/*.pt
 **/*.pth
 **/*.zip
-
+**/*.DS_Store
 
 __pycache__
