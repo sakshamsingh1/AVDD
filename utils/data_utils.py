@@ -58,6 +58,60 @@ def get_test_dataset(dataset, args):
             images_test[:, c] = (images_test[:, c] - mean[c]) / std[c]
         dst_test = CombTensorDataset(aud_test, images_test, labels_test, args)  
 
+    elif dataset == 'AVE':
+        data = torch.load('data/test_data/ave_test.pt', map_location='cpu')
+        #common
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 28
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        #Test
+        aud_test = data['audio_test']
+        images_test = data['images_test']
+        labels_test = data['labels_test']
+        
+        aud_test = aud_test.detach().float()
+        images_test = images_test.detach().float() / 255.0
+        labels_test = labels_test.detach().long()
+        for c in range(channel[1]):
+            images_test[:, c] = (images_test[:, c] - mean[c]) / std[c]
+        dst_test = CombTensorDataset(aud_test, images_test, labels_test, args)
+
+    elif dataset == 'VGG':
+        data = torch.load('data/test_data/vgg_test.pt', map_location='cpu')
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 309
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        # Test
+        images_test = data['images_test']
+        aud_test = data['audio_test']
+        labels_test = data['labels_test']
+        
+        aud_test = aud_test.detach().float()
+        images_test = images_test.detach().float() / 255.0
+        labels_test = labels_test.detach().long()
+        for c in range(channel[1]):
+            images_test[:, c] = (images_test[:, c] - mean[c]) / std[c]
+        dst_test = CombTensorDataset(aud_test, images_test, labels_test, args)
+
+
     else:
         exit('unknown dataset: %s'%dataset)
     
