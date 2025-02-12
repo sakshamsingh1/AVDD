@@ -23,7 +23,8 @@ bash scripts/download_vgg_subset.sh
 ```bash
 bash scripts/vgg10k_evaluate.sh
 ```
-Note: Please uncomment different commands in the file to test different IPC settings
+Note: Please uncomment different commands in the file to test different IPC settings \
+Similar scripts are present for other datasets ( Music-21 )
 
 ### Visualization
 You can visualize the distilled data using the `visualize_data.ipynb` notebook. 

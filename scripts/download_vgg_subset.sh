@@ -21,4 +21,4 @@ echo "Removing zip file"
 rm data/syn_data/VGG_subset_ipc20.zip
 
 echo "Downloading VGG subset train/test data"
-wget -P data/train_data/ https://huggingface.co/datasets/sakshamsingh1/AVDD_data/resolve/main/train_data/vgg_subset.pt
+wget -P data/test_data/ https://huggingface.co/datasets/sakshamsingh1/AVDD_data/resolve/main/test_data/vgg_subset_test.pt
