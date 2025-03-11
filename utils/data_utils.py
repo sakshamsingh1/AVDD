@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 import numpy as np
+import time
 
 def get_test_dataset(dataset, args):
     
@@ -111,7 +112,6 @@ def get_test_dataset(dataset, args):
             images_test[:, c] = (images_test[:, c] - mean[c]) / std[c]
         dst_test = CombTensorDataset(aud_test, images_test, labels_test, args)
 
-
     else:
         exit('unknown dataset: %s'%dataset)
     
@@ -119,6 +119,80 @@ def get_test_dataset(dataset, args):
     testloader = torch.utils.data.DataLoader(dst_test, batch_size=bs, shuffle=False, num_workers=args.num_workers)
 
     return channel, im_size, num_classes, testloader
+
+
+def get_train_dataset(dataset, args):
+    
+    if dataset == 'VGG_subset':
+        data = torch.load('data/train_data/vgg_subset_train.pt', map_location='cpu')
+        
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 10
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        #Test
+        aud_train = data['audio_train']
+        images_train = data['images_train']
+        labels_train = data['labels_train']
+        
+        aud_train = aud_train.detach().float()
+        images_train = images_train.detach().float() / 255.0
+        labels_train = labels_train.detach().long()
+        for c in range(channel[1]):
+            images_train[:, c] = (images_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, images_train, labels_train, args)
+
+    elif dataset == 'AVE':
+        data = torch.load('data/train_data/ave_train.pt', map_location='cpu')
+        
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 28
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        #Test
+        aud_train = data['audio_train']
+        images_train = data['images_train']
+        labels_train = data['labels_train']
+        
+        aud_train = aud_train.detach().float()
+        images_train = images_train.detach().float() / 255.0
+        labels_train = labels_train.detach().long()
+        for c in range(channel[1]):
+            images_train[:, c] = (images_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, images_train, labels_train, args)
+
+    else:
+        exit('unknown dataset: %s'%dataset)
+    
+    return channel, im_size, num_classes, mean, std, dst_train
+
+def get_herd_path(dataset):
+    if dataset == 'VGG_subset':
+        return 'data/herding_data/VGG_subset_herd_idx_dict.pkl'
+    elif dataset == 'VGG':
+        return 'data/herding_data/VGG_herd_idx_dict.pkl'
+    elif dataset == 'AVE':
+        return 'data/herding_data/AVE_herd_idx_dict.pkl'
+    elif dataset == 'Music_21_center' or dataset == 'Music_21':
+        return 'data/herding_data/Music_21_center_herd_idx_dict.pkl'
+    else:
+        exit('unknown dataset: %s'%dataset)
 
 class CombTensorDataset(Dataset):
     def __init__(self, audio, images, labels, args): # images: n x c x h x w tensor
@@ -326,3 +400,6 @@ AUGMENT_FNS = {
     'scale': [rand_scale],
     'rotate': [rand_rotate],
 }
+
+def get_time():
+    return str(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime()))
