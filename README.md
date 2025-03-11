@@ -26,7 +26,7 @@ bash scripts/vgg10k_evaluate.sh
 Note: Please uncomment different commands in the file to test different IPC settings \
 Similar scripts are present for other datasets.
 
-### Visualization
+**Visualization** \
 You can visualize the distilled data using the `visualize_data.ipynb` notebook. 
 
 ## Training
