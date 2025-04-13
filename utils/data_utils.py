@@ -138,7 +138,6 @@ def get_train_dataset(dataset, args):
         im_size = (224, 224)
         im_size = [aud_size, im_size]
         
-        #Test
         aud_train = data['audio_train']
         images_train = data['images_train']
         labels_train = data['labels_train']
@@ -165,7 +164,6 @@ def get_train_dataset(dataset, args):
         im_size = (224, 224)
         im_size = [aud_size, im_size]
         
-        #Test
         aud_train = data['audio_train']
         images_train = data['images_train']
         labels_train = data['labels_train']
@@ -182,6 +180,113 @@ def get_train_dataset(dataset, args):
     
     return channel, im_size, num_classes, mean, std, dst_train
 
+def get_class_train_dataset(dataset, class_num, args):
+
+    if dataset == 'VGG_subset':
+        data = torch.load(f'data/classwise_train_data/class_wise_vgg_subset/train_{class_num}.pt', map_location='cpu')
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 10
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        # Train
+        im_train = data['images']
+        aud_train = data['audio']
+        labels_train = torch.tensor([class_num]*aud_train.shape[0], dtype=torch.long)
+        
+        aud_train = aud_train.detach().float()
+        im_train = im_train.detach().float() / 255.0
+        for c in range(channel[1]):
+            im_train[:, c] = (im_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, im_train, labels_train, args)
+
+    elif dataset == 'VGG':
+        data = torch.load(f'data/classwise_train_data/class_wise_vgg/train_{class_num}.pt', map_location='cpu')
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 10
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        # Train
+        im_train = data['images']
+        aud_train = data['audio']
+        labels_train = torch.tensor([class_num]*aud_train.shape[0], dtype=torch.long)
+        
+        aud_train = aud_train.detach().float()
+        im_train = im_train.detach().float() / 255.0
+        for c in range(channel[1]):
+            im_train[:, c] = (im_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, im_train, labels_train, args)        
+
+    elif dataset == 'AVE':
+        data = torch.load(f'data/classwise_train_data/class_wise_ave/train_{class_num}.pt', map_location='cpu')
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 28
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        # Train
+        im_train = data['images']
+        aud_train = data['audio']
+        labels_train = torch.tensor([class_num]*aud_train.shape[0], dtype=torch.long)
+        
+        aud_train = aud_train.detach().float()
+        im_train = im_train.detach().float() / 255.0
+        for c in range(channel[1]):
+            im_train[:, c] = (im_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, im_train, labels_train, args)
+
+    elif dataset == 'Music_21':
+        data = torch.load(f'data/classwise_train_data/class_wise_music_21/train_{class_num}.pt', map_location='cpu')
+        mean = [0.425, 0.396, 0.370]
+        std =  [0.229, 0.224, 0.221]
+        num_classes = 28
+
+        aud_channel = 1
+        im_channel = 3
+        channel = [aud_channel, im_channel]
+
+        aud_size = (128, 56)
+        im_size = (224, 224)
+        im_size = [aud_size, im_size]
+        
+        # Train
+        im_train = data['images']
+        aud_train = data['audio']
+        labels_train = torch.tensor([class_num]*aud_train.shape[0], dtype=torch.long)
+        
+        aud_train = aud_train.detach().float()
+        im_train = im_train.detach().float() / 255.0
+        for c in range(channel[1]):
+            im_train[:, c] = (im_train[:, c] - mean[c]) / std[c]
+        dst_train = CombTensorDataset(aud_train, im_train, labels_train, args)
+
+    else:
+        exit('unknown dataset: %s'%dataset)
+
+    return channel, im_size, dst_train, mean, std, num_classes
+
 def get_herd_path(dataset):
     if dataset == 'VGG_subset':
         return 'data/herding_data/VGG_subset_herd_idx_dict.pkl'
@@ -191,6 +296,18 @@ def get_herd_path(dataset):
         return 'data/herding_data/AVE_herd_idx_dict.pkl'
     elif dataset == 'Music_21_center' or dataset == 'Music_21':
         return 'data/herding_data/Music_21_center_herd_idx_dict.pkl'
+    else:
+        exit('unknown dataset: %s'%dataset)
+
+def get_herd_path_classwise(dataset):
+    if dataset == 'VGG_subset':
+        return 'data/herding_data/VGG_subset_herd_idx_dict_local_exp_0.pkl'
+    elif dataset == 'VGG':
+        return 'data/herding_data/VGG_herd_idx_dict_local_exp_0.pkl'
+    elif dataset == 'AVE':
+        return 'data/herding_data/AVE_herd_idx_dict_exp_0.pkl'
+    elif dataset == 'Music_21_center' or dataset == 'Music_21':
+        return 'data/herding_data/Music_21_center_herd_idx_dict_local_exp_0.pkl'
     else:
         exit('unknown dataset: %s'%dataset)
 

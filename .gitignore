@@ -2,6 +2,7 @@
 **/*.pth
 **/*.zip
 **/*.DS_Store
+data/log/*.txt
 
 __pycache__
 

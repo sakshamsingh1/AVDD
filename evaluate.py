@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('--ipc', type=int, default=10, help='image(s) per class')
     parser.add_argument('--epoch_eval_train', type=int, default=30, help='epochs to train a model with synthetic data')
     parser.add_argument('--Iteration', type=int, default=5000, help='iteration to evaluate the synthetic data')
-    parser.add_argument('--num_exp', type=int, default=3, help='the number of experiments')    
+    parser.add_argument('--num_exp', type=int, default=3, help='the number of experiments')
     parser.add_argument('--base_dir', type=str, default='', help='place to save buffer')
     parser.add_argument('--input_modality', type=str, default='av', help='a/v/av')
     parser.add_argument('--num_eval', type=int, default=5, help='the number of evaluating randomly initialized models')
