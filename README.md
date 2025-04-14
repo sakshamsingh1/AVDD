@@ -29,6 +29,41 @@ Similar scripts are present for other datasets.
 **Visualization** \
 You can visualize the distilled data using the `visualize_data.ipynb` notebook. 
 
+## [Recommended] Classwise Training
+<details style="margin-top: -5px;">  
+  <summary> More </summary>
+  <ul>
+    <li>Synthetic data can be learned independently for each class.</li>
+    <li>Training all classes together with high class counts and images-per-class (IPC) may lead to out-of-memory (OOM) issues.</li>
+    <li>This approach allows parallel training for each class.</li>
+  </ul>
+</details>
+
+### Download classwise training data
+```bash
+# Open the script and uncomment the datasets you wish to download 
+bash scripts/download_classwise_train_data.sh
+```
+Alternatively, you can generate class-wise data from the full training set using: ` python preprocess/create_classwise_data.py`
+
+### Pre-saving real mean embeddings
+```bash
+# Basically we can pre-save real mean embeddings with ipc=1
+bash scripts/create_classwise_buffer.sh
+```
+Alternatively, you can download pre-extracted embeddings from [huggingface](https://huggingface.co/datasets/sakshamsingh1/AVDD_data/tree/main/buffers)
+
+### Learn synthetic data classwise
+Now you can learn the synthetic data classwise with different IPCs
+```bash
+bash scripts/train_classwise.sh
+```
+
+### Evaluate classwise trained data
+```bash
+bash scripts/classwise_evaluate.sh
+```
+
 ## Training
 
 ### Prepare data
@@ -64,41 +99,6 @@ Download preprocessed training data from huggingface
 ```bash
 # Please open the script and refer to some examples here.
 bash scripts/train_avdd.sh
-```
-
-## Classwise training code
-<details style="margin-top: -5px;">  
-  <summary> More </summary>
-  <ul>
-    <li>Synthetic data can be learned independently for each class.</li>
-    <li>Training all classes together with high class counts and images-per-class (IPC) may lead to out-of-memory (OOM) issues.</li>
-    <li>This approach allows parallel training for each class.</li>
-  </ul>
-</details>
-
-### Download classwise training data
-```bash
-# Open the script and uncomment the datasets you wish to download 
-bash scripts/download_classwise_train_data.sh
-```
-Alternatively, you can generate class-wise data from the full training set using: ` python preprocess/create_classwise_data.py`
-
-### Pre-saving real mean embeddings
-```bash
-# Basically we can pre-save real mean embeddings with ipc=1
-bash scripts/create_classwise_buffer.sh
-```
-Alternatively, you can download pre-extracted embeddings from [huggingface](https://huggingface.co/datasets/sakshamsingh1/AVDD_data/tree/main/buffers)
-
-### Learn synthetic data classwise
-Now you can learn the synthetic data classwise with different IPCs
-```bash
-bash scripts/train_classwise.sh
-```
-
-### Evaluate classwise trained data
-```bash
-bash scripts/classwise_evaluate.sh
 ```
 
 ## TODO
